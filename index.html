@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimpleDEX | Tokens</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Dashboard</h1>
+
+    <!-- Nav Tabs -->
+    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="simpleDex-tab" data-bs-toggle="tab" data-bs-target="#simpleDex" type="button" role="tab" aria-controls="simpleDex" aria-selected="true">SimpleDEX</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tokenA-tab" data-bs-toggle="tab" data-bs-target="#tokenA" type="button" role="tab" aria-controls="tokenA" aria-selected="false">Token A</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tokenB-tab" data-bs-toggle="tab" data-bs-target="#tokenB" type="button" role="tab" aria-controls="tokenB" aria-selected="false">Token B</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content mt-3" id="mainTabsContent">
+      <!-- SimpleDEX Tab -->
+      <div class="tab-pane fade show active" id="simpleDex" role="tabpanel" aria-labelledby="simpleDex-tab">
+        <iframe src="SimpleDex.html" frameborder="0" class="w-100" style="height: 600px;"></iframe>
+      </div>
+
+      <!-- TokenA Tab -->
+      <div class="tab-pane fade" id="tokenA" role="tabpanel" aria-labelledby="tokenA-tab">
+        <iframe src="TokenA.html" frameborder="0" class="w-100" style="height: 600px;"></iframe>
+      </div>
+
+      <!-- TokenB Tab -->
+      <div class="tab-pane fade" id="tokenB" role="tabpanel" aria-labelledby="tokenB-tab">
+        <iframe src="TokenB.html" frameborder="0" class="w-100" style="height: 600px;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

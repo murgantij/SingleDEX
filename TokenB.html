@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token A</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container my-5"> <h1>TokenB</h1>
+    <p>Dirección del contrato<span id="contractAddress">0x823916DD1CcF676A50be8273D3A046388DC8a6E0</span></p>
+    <p id="account" class="text-center text-muted">Cuenta: <strong>NO CONECTADA</strong></p>
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">Consultar Saldo</div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="accountAddress" class="form-label">Dirección de la cuenta</label>
+          <input id="accountAddress" type="text" class="form-control" placeholder="Ejemplo: 0x123...">
+        </div>
+        <button id="btnGetBalance" class="btn btn-success w-100">Consultar Saldo</button>
+        <p class="mt-3 text-center text-muted">Saldo: <strong id="balance">-</strong></p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">Aprobar Tokens</div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="spenderAddress" class="form-label">Dirección del contrato o cuenta</label>
+          <input id="spenderAddress" type="text" class="form-control" placeholder="Ejemplo: 0x456...">
+        </div>
+        <div class="mb-3">
+          <label for="approveAmount" class="form-label">Cantidad a transferir</label>
+          <input id="approveAmount" type="number" class="form-control" placeholder="Cantidad a aprobar">
+        </div>
+        <button id="btnApprove" class="btn btn-primary w-100">Aprobar</button>
+      </div>
+    </div>
+    
+   <!-- Transferir Token -->
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">Transferir Token B</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="recipientAddress" class="form-label">Dirección del destinatario</label>
+            <input id="recipientAddress" type="text" class="form-control" placeholder="Ejemplo: 0x456...">
+          </div>
+          <div class="mb-3">
+            <label for="amount" class="form-label">Cantidad a transferir</label>
+            <input id="amount" type="number" class="form-control" placeholder="Cantidad en Token A">
+          </div>
+          <button id="btnTransfer" class="btn btn-primary w-100">Transferir</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script type="module">
+    import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
+    
+    const TokenBddress = "0x823916DD1CcF676A50be8273D3A046388DC8a6E0"; // Dirección del contrato TokenB
+    const abi = [
+      // ABI mínima del token ERC-20
+      "function balanceOf(address account) view returns (uint256)",
+      "function approve(address spender, uint256 amount) returns (bool)",
+      "function transfer(address recipient, uint256 amount) returns (bool)"
+    ];
+
+    let provider, signer, contract;
+
+    async function init() {
+      if (window.ethereum) {
+        try {
+        
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          provider = new ethers.BrowserProvider(window.ethereum);
+          signer = await provider.getSigner();
+
+          contract = new ethers.Contract(TokenBddress, abi, signer);
+
+          console.log("Conectado a MetaMask y contrato configurado.");
+          document.getElementById("account").innerHTML  = "Cuenta: <strong>CONECTADA</strong>";
+        } catch (error) {
+          console.error("Error al conectar con MetaMask:", error);
+        }
+      } else {
+        alert("MetaMask no está instalado. Por favor, instálalo para interactuar con esta página.");
+      }
+    }
+
+    async function getBalance() {
+      console.log(ethers.utils);  
+      try {
+        const address = document.getElementById("accountAddress").value;
+        if (!ethers.isAddress(address)) {
+          alert("Dirección inválida.");
+          return;
+        }
+        const balance = await contract.balanceOf(address);
+        console.log(balance);
+        document.getElementById("balance").innerText = ethers.formatEther(balance);
+      } catch (error) {
+        console.error("Error al obtener el saldo:", error);
+        alert("Error al obtener el saldo.");
+        alert(`Error: ${error.message}`);
+      }
+    }
+
+    async function approve() {
+      try {
+        const spender = document.getElementById("spenderAddress").value;
+        const amount = document.getElementById("approveAmount").value;
+        if (!ethers.isAddress(spender)) {
+          alert("Dirección de spender inválida.");
+          return;
+        }
+        const tx = await contract.approve(spender, ethers.parseEther(amount));
+        await tx.wait();
+        alert("Tokens aprobados exitosamente.");
+      } catch (error) {
+        console.error("Error al aprobar tokens:", error);
+        alert("Error al aprobar tokens.");
+        alert(`Error: ${error.message}`);
+      }
+    }
+
+    async function transfer() {
+      try {
+        const recipient = document.getElementById("recipientAddress").value;
+        const amount = document.getElementById("transferAmount").value;
+        if (!ethers.isAddress(recipient)) {
+          alert("Dirección del destinatario inválida.");
+          return;
+        }
+        const tx = await contract.transfer(recipient, ethers.parseEther(amount));
+        await tx.wait();
+        alert("Tokens transferidos exitosamente.");
+      } catch (error) {
+        console.error("Error al transferir tokens:", error);
+        alert("Error al transferir tokens.");
+        alert(`Error: ${error.message}`);
+      }
+    }
+
+    // Inicializar la conexión al cargar la página
+    window.onload = init;
+    document.getElementById('btnGetBalance').addEventListener('click', getBalance);
+    document.getElementById('btnApprove').addEventListener('click', approve);
+    document.getElementById('btnTransfer').addEventListener('click', transfer);
+  </script>
+</body>
+</html>
